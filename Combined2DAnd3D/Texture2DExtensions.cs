@@ -27,6 +27,7 @@ namespace Combined2DAnd3D
                 CpuAccessFlags = CpuAccessFlags.Read,
                 OptionFlags = ResourceOptionFlags.None
             });
+            Thread.Sleep(50);
             device.CopyResource(texture, textureCopy);
             Thread.Sleep(50);
 
