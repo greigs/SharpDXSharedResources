@@ -12,7 +12,7 @@ namespace Combined2DAnd3D
     public static class Texture2DExtensions
     {
 
-        public static void Save(this Texture2D texture, Stream stream, SharpDX.Direct3D10.Device device)
+        public static System.Drawing.Bitmap CopyToBitmap(this Texture2D texture, Stream stream, SharpDX.Direct3D10.Device device)
         {
             var textureCopy = new Texture2D(device, new Texture2DDescription
             {
@@ -62,13 +62,10 @@ namespace Combined2DAnd3D
 
             bitmap.UnlockBits(mapDest);
 
-              var path = "c:\\temp\\screens\\" + DateTime.Now.Ticks + ".bmp";
+            return bitmap;
 
-                        // Save the output
-                        bitmap.Save(path, ImageFormat.Bmp);
-                        bitmap.Dispose();
-                        
-            
+
+
         }
     }
 }

@@ -2,6 +2,7 @@
 /Combined2DAnd3D/obj/
 /Combined2DAnd3D/*.user
 /Combined2DAnd3D/*.suo
+/packages/
 *.suo
 *.user
 /_ReSharper.*
