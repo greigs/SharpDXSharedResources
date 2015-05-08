@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Threading;
 using SharpDX;
 using SharpDX.Direct3D10;
 using SharpDX.DXGI;
-using SharpDX.WIC;
 
 namespace Combined2DAnd3D
 {
@@ -27,9 +25,7 @@ namespace Combined2DAnd3D
                 CpuAccessFlags = CpuAccessFlags.Read,
                 OptionFlags = ResourceOptionFlags.None
             });
-            Thread.Sleep(50);
             device.CopyResource(texture, textureCopy);
-            Thread.Sleep(50);
 
             DataStream mipsize;
             var dataBox = textureCopy.Map(
@@ -63,9 +59,6 @@ namespace Combined2DAnd3D
             bitmap.UnlockBits(mapDest);
 
             return bitmap;
-
-
-
         }
     }
 }
