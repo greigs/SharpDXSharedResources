@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Combined2DAnd3D
+﻿namespace Combined2DAnd3D
 {
     using System;
     using System.Drawing;
-    using System.IO;
     using AForge.Imaging;
 
     namespace ImageCompare
@@ -21,10 +14,10 @@ namespace Combined2DAnd3D
             /// <summary>
             /// Compares the images.
             /// </summary>
-
+            /// <param name="imageOne"></param>
+            /// <param name="imageTwo"></param>
             /// <param name="compareLevel">The compare level.</param>
             /// <param name="similarityThreshold">The similarity threshold.</param>
-            /// <param name="imageOne"></param>
             /// <returns>Boolean result</returns>
             public static Boolean CompareImagesSlow(Bitmap imageOne, Bitmap imageTwo, double compareLevel, float similarityThreshold)
             {            

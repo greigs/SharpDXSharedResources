@@ -1,0 +1,8 @@
+C:\repo\SharpDXSharedResources\KeyContextSimulator\bin\Debug\KeyContextSimulator.exe.config
+C:\repo\SharpDXSharedResources\KeyContextSimulator\bin\Debug\KeyContextSimulator.exe
+C:\repo\SharpDXSharedResources\KeyContextSimulator\bin\Debug\KeyContextSimulator.pdb
+C:\repo\SharpDXSharedResources\KeyContextSimulator\obj\Debug\KeyContextSimulator.csprojResolveAssemblyReference.cache
+C:\repo\SharpDXSharedResources\KeyContextSimulator\obj\Debug\KeyContextSimulator.Properties.Resources.resources
+C:\repo\SharpDXSharedResources\KeyContextSimulator\obj\Debug\KeyContextSimulator.csproj.GenerateResource.Cache
+C:\repo\SharpDXSharedResources\KeyContextSimulator\obj\Debug\KeyContextSimulator.exe
+C:\repo\SharpDXSharedResources\KeyContextSimulator\obj\Debug\KeyContextSimulator.pdb

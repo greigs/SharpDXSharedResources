@@ -81,12 +81,12 @@ namespace Combined2DAnd3D
         }
 
 
-        public static System.Drawing.Bitmap CopyToBitmap(this Texture2D texture, SharpDX.Direct3D10.Device device)
+        public static Bitmap CopyToBitmap(this Texture2D texture, SharpDX.Direct3D10.Device device)
         {
             var textureCopy = new Texture2D(device, new Texture2DDescription
             {
-                Width = (int) texture.Description.Width,
-                Height = (int) texture.Description.Height,
+                Width = texture.Description.Width,
+                Height = texture.Description.Height,
                 MipLevels = 1,
                 ArraySize = 1,
                 Format = texture.Description.Format,
@@ -106,9 +106,9 @@ namespace Combined2DAnd3D
                 out mipsize);
 
 
-            var bitmap = new System.Drawing.Bitmap(textureCopy.Description.Width, textureCopy.Description.Height,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var boundsRect = new System.Drawing.Rectangle(0, 0, textureCopy.Description.Width, textureCopy.Description.Height);
+            var bitmap = new Bitmap(textureCopy.Description.Width, textureCopy.Description.Height,
+                PixelFormat.Format32bppArgb);
+            var boundsRect = new Rectangle(0, 0, textureCopy.Description.Width, textureCopy.Description.Height);
 
 
 
