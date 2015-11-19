@@ -86,12 +86,12 @@ namespace Combined2DAnd3D
         {
             // The threshold is the minimal acceptable similarity between template candidate. 
             // Min (loose) is 0.0 Max (strict) is 1.0
-            const float similarityThreshold = 0.65f;
+            const float similarityThreshold = 0.50f;
 
 
             // Comparison level is initially set to 0.95
             // Increment loop in steps of .01
-            for (var compareLevel = 0.70; compareLevel <= 0.90; compareLevel += 0.02)
+            for (var compareLevel = 0.60; compareLevel <= 0.80; compareLevel += 0.02)
             {
                 // Run the tests
                 //var testOne = ImageComparer.CompareImagesSlow(bitmap, bitmap, compareLevel, similarityThreshold);
