@@ -23,9 +23,11 @@ namespace Combined2DAnd3D
             var factory1 = new Factory1();
             var adapter1 = factory1.GetAdapter1(0);
             var device10 = new SharpDX.Direct3D10.Device1(adapter1);
-            var ptrVal = ((long)-1073731326); // handle of shared texture
+            var ptrVal = ((long)-1073733374); // handle of shared texture
 
             var textureD3D10 = device10.OpenSharedResource<SharpDX.Direct3D10.Texture2D>(new IntPtr(ptrVal));
+
+            var swordBitmap = (Bitmap)System.Drawing.Bitmap.FromFile("sword-flipped.bmp");
 
             while (true)
             {
@@ -35,26 +37,30 @@ namespace Combined2DAnd3D
 
                     var areas = new[]
                     {
-                        new Rectangle(0,0,100,100)
+                        new Rectangle(1920 - 1148 ,13,56,56),
+                        //new Rectangle(100,100,56,56)
                     };
 
 
-                    //var bitmaps = textureD3D10.SplitIntoBitmapSegments(device10, areas);
+                    var bitmaps = textureD3D10.SplitIntoBitmapSegments(device10, areas);
 
-                    //for (int i = 0; i < areas.Length; i++)
-                    //{
-                    //    SaveToDisk(bitmaps[i]);
-                    //}
+                    for (int i = 0; i < areas.Length; i++)
+                    {
+                        //SaveToDisk(bitmaps[i]);
+                    }
                     
 
                     //Console.ReadLine();
 
-                    var bitmap2 = textureD3D10.CopyToBitmap(device10);
-                    SaveToDisk(bitmap2);
+                    //var bitmap2 = textureD3D10.CopyToBitmap(device10);
+                    //SaveToDisk(bitmap2);
 
-                    //TestComparison(bitmap, bitmap2);
+                    TestComparison(bitmaps[0], swordBitmap);
+                    SaveToDisk(bitmaps[0]);
+                    SaveToDisk(swordBitmap);
 
-                    Thread.Sleep(1000);
+
+                    Thread.Sleep(3000);
 
                     
 
@@ -80,20 +86,20 @@ namespace Combined2DAnd3D
         {
             // The threshold is the minimal acceptable similarity between template candidate. 
             // Min (loose) is 0.0 Max (strict) is 1.0
-            const float similarityThreshold = 0.50f;
+            const float similarityThreshold = 0.65f;
 
 
             // Comparison level is initially set to 0.95
             // Increment loop in steps of .01
-            for (var compareLevel = 0.95; compareLevel <= 1.00; compareLevel += 0.01)
+            for (var compareLevel = 0.70; compareLevel <= 0.90; compareLevel += 0.02)
             {
                 // Run the tests
-                var testOne = ImageComparer.CompareImagesSlow(bitmap, bitmap, compareLevel, similarityThreshold);
+                //var testOne = ImageComparer.CompareImagesSlow(bitmap, bitmap, compareLevel, similarityThreshold);
                 var testTwo = ImageComparer.CompareImagesSlow(bitmap, bitmap2, compareLevel, similarityThreshold);
 
                 // Output the results
                 Console.WriteLine("Test images for similarities at compareLevel: {0}", compareLevel);
-                Console.WriteLine("Image 1 compared to Image 1 - {0}", testOne);
+                //Console.WriteLine("Image 1 compared to Image 1 - {0}", testOne);
                 Console.WriteLine("Image 1 compared to Image 2 - {0}", testTwo);
             }
 
