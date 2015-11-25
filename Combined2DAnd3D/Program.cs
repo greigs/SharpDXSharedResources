@@ -2,6 +2,7 @@
 using System.Drawing.Imaging;
 using System.IO;
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Combined2DAnd3D.ImageCompare;
@@ -23,52 +24,97 @@ namespace Combined2DAnd3D
             var factory1 = new Factory1();
             var adapter1 = factory1.GetAdapter1(0);
             var device10 = new SharpDX.Direct3D10.Device1(adapter1);
-            var ptrVal = ((long)-1073733374); // handle of shared texture
+            var ptrVal = ((long)-1073728894); // handle of shared texture
+
+            var filenames = new string[]
+            {
+                "sword",
+                "dirt",
+                "pickaxe",
+                "sand",
+                "steak",
+                "sword",
+                "torch",
+                "wood"
+            };
+
+
+            var icons = filenames.Select(LoadBmp);
+
+            //var swordBitmap2 = (Bitmap)System.Drawing.Bitmap.FromFile("635834899909840625.png");
+            //TestComparison(swordBitmap2, swordBitmap);
 
             var textureD3D10 = device10.OpenSharedResource<SharpDX.Direct3D10.Texture2D>(new IntPtr(ptrVal));
 
-            var swordBitmap = (Bitmap)System.Drawing.Bitmap.FromFile("sword-flipped.bmp");
-
-            while (true)
-            {
-                try
-                {
-                    //Console.ReadLine();
-
-                    var areas = new[]
-                    {
-                        new Rectangle(1920 - 1148 ,13,56,56),
-                        //new Rectangle(100,100,56,56)
-                    };
 
 
-                    var bitmaps = textureD3D10.SplitIntoBitmapSegments(device10, areas);
+             while (true)
+             {
+                 try
+                 {
+                     //Console.ReadLine();
 
-                    for (int i = 0; i < areas.Length; i++)
-                    {
-                        //SaveToDisk(bitmaps[i]);
-                    }
-                    
+                     var areas = new[]
+                     {
+                         new Rectangle(1920 - 1148 ,13,56,56),
+                         //new Rectangle(100,100,56,56)
+                     };
+
+
+                     var bitmaps = textureD3D10.SplitIntoBitmapSegments(device10, areas);
+
+                     for (int i = 0; i < areas.Length; i++)
+                     {
+                         //SaveToDisk(bitmaps[i]);
+                     }
+
 
                     //Console.ReadLine();
 
                     //var bitmap2 = textureD3D10.CopyToBitmap(device10);
                     //SaveToDisk(bitmap2);
+                    var changed = ChangePixelFormat(bitmaps[0], System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-                    TestComparison(bitmaps[0], swordBitmap);
-                    SaveToDisk(bitmaps[0]);
-                    SaveToDisk(swordBitmap);
+                    //SaveToDisk(changed);
 
+                     var highest = 0f;
+                     string highesticonname = null;
 
-                    Thread.Sleep(3000);
-
+                    var count = 0;
+                    foreach (var icon in icons)
+                    {
+                        var tmp = TestComparison(changed, icon);
+                         if (tmp > highest)
+                         {
+                             highest = tmp;
+                             highesticonname = filenames[count];
+                         }
+                        count++;
+                    }
                     
+                     
+                     //SaveToDisk(swordBitmap);
+                     Console.WriteLine(highest + " " + highesticonname);
 
-                }
-                catch (Exception ex)
-                {
-                }
-            }
+                     Thread.Sleep(3000);
+
+
+
+                 }
+                 catch (Exception ex)
+                 {
+                 }
+             }
+        }
+
+        private static Bitmap LoadBmp(string filename)
+        {
+            return ChangePixelFormat(new Bitmap((Bitmap)System.Drawing.Bitmap.FromFile(filename + ".bmp")), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+        }
+
+        private static Bitmap ChangePixelFormat(Bitmap inputImage, System.Drawing.Imaging.PixelFormat newFormat)
+        {
+            return (inputImage.Clone(new Rectangle(0, 0, inputImage.Width, inputImage.Height), newFormat));
         }
 
 
@@ -82,28 +128,19 @@ namespace Combined2DAnd3D
             stream.Dispose();
         }
 
-        private static void TestComparison(Bitmap bitmap, Bitmap bitmap2)
+        private static float TestComparison(Bitmap bitmap, Bitmap bitmap2)
         {
             // The threshold is the minimal acceptable similarity between template candidate. 
             // Min (loose) is 0.0 Max (strict) is 1.0
-            const float similarityThreshold = 0.50f;
+             float similarityThreshold = 0.5f;
 
 
-            // Comparison level is initially set to 0.95
-            // Increment loop in steps of .01
-            for (var compareLevel = 0.60; compareLevel <= 0.80; compareLevel += 0.02)
-            {
                 // Run the tests
                 //var testOne = ImageComparer.CompareImagesSlow(bitmap, bitmap, compareLevel, similarityThreshold);
-                var testTwo = ImageComparer.CompareImagesSlow(bitmap, bitmap2, compareLevel, similarityThreshold);
+                var test = ImageComparer.CompareImagesSlow(bitmap, bitmap2, similarityThreshold);
 
-                // Output the results
-                Console.WriteLine("Test images for similarities at compareLevel: {0}", compareLevel);
-                //Console.WriteLine("Image 1 compared to Image 1 - {0}", testOne);
-                Console.WriteLine("Image 1 compared to Image 2 - {0}", testTwo);
-            }
 
-            Console.WriteLine("End of comparison.");
+            return test;
 
         }
     }
