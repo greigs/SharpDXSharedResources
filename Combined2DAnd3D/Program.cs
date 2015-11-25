@@ -23,7 +23,7 @@ namespace Combined2DAnd3D
             var factory1 = new Factory1();
             var adapter1 = factory1.GetAdapter1(0);
             var device10 = new SharpDX.Direct3D10.Device1(adapter1);
-            var ptrVal = ((long)-1073728894); // handle of shared texture
+            var ptrVal = ((long)-2147476734); // handle of shared texture
 
             var filenames = new string[]
             {
@@ -36,7 +36,8 @@ namespace Combined2DAnd3D
                 "torch",
                 "wood",
                 "iron",
-                "stone"
+                "stone",
+                "empty"
             };
 
 
@@ -77,7 +78,7 @@ namespace Combined2DAnd3D
                         position++;
                         var changed = ChangePixelFormat(bitmap, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-                        SaveToDisk(changed);
+                        //SaveToDisk(changed);
 
                         var highest = 0f;
                         string highesticonname = null;
@@ -94,9 +95,16 @@ namespace Combined2DAnd3D
                             count++;
                         }
 
-
-                        //SaveToDisk(swordBitmap);
-                        Console.WriteLine(position + ": " + highest + " " + highesticonname);
+                         if (highest > 0.78f)
+                         {
+                            Console.WriteLine(position + ": " + highest + " " + highesticonname);
+                         }
+                         else
+                         {
+                            Console.WriteLine(position + ": " + highest + " empty");
+                        }
+          
+                        
                     }
 
 
