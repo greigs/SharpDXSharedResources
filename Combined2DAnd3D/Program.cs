@@ -3,7 +3,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Combined2DAnd3D.ImageCompare;
 using SharpDX.DXGI;
@@ -35,68 +34,75 @@ namespace Combined2DAnd3D
                 "steak",
                 "sword",
                 "torch",
-                "wood"
+                "wood",
+                "iron",
+                "stone"
             };
 
 
             var icons = filenames.Select(LoadBmp);
 
-            //var swordBitmap2 = (Bitmap)System.Drawing.Bitmap.FromFile("635834899909840625.png");
-            //TestComparison(swordBitmap2, swordBitmap);
-
             var textureD3D10 = device10.OpenSharedResource<SharpDX.Direct3D10.Texture2D>(new IntPtr(ptrVal));
-
-
 
              while (true)
              {
                  try
                  {
-                     //Console.ReadLine();
-
+                 
+                    const int distancebetween = 80;
+                     const int start = 1920 - 1308;
                      var areas = new[]
                      {
-                         new Rectangle(1920 - 1148 ,13,56,56),
-                         //new Rectangle(100,100,56,56)
+                         new Rectangle(start + distancebetween * 0, 13,56,56),
+                         new Rectangle(start + distancebetween * 1 ,13,56,56),
+                         new Rectangle(start + distancebetween * 2 ,13,56,56),
+                         new Rectangle(start + distancebetween * 3 ,13,56,56),
+                         new Rectangle(start + distancebetween * 4 ,13,56,56),
+                         new Rectangle(start + distancebetween * 5 ,13,56,56),
+                         new Rectangle(start + distancebetween * 6 ,13,56,56),
+                         new Rectangle(start + distancebetween * 7 ,13,56,56),
+                         new Rectangle(start + distancebetween * 8 ,13,56,56),
                      };
 
 
                      var bitmaps = textureD3D10.SplitIntoBitmapSegments(device10, areas);
 
-                     for (int i = 0; i < areas.Length; i++)
-                     {
-                         //SaveToDisk(bitmaps[i]);
-                     }
-
-
                     //Console.ReadLine();
 
                     //var bitmap2 = textureD3D10.CopyToBitmap(device10);
                     //SaveToDisk(bitmap2);
-                    var changed = ChangePixelFormat(bitmaps[0], System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                     var position = 0;
+                     foreach (var bitmap in bitmaps)
+                     {
+                        position++;
+                        var changed = ChangePixelFormat(bitmap, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-                    //SaveToDisk(changed);
+                        SaveToDisk(changed);
 
-                     var highest = 0f;
-                     string highesticonname = null;
+                        var highest = 0f;
+                        string highesticonname = null;
 
-                    var count = 0;
-                    foreach (var icon in icons)
-                    {
-                        var tmp = TestComparison(changed, icon);
-                         if (tmp > highest)
-                         {
-                             highest = tmp;
-                             highesticonname = filenames[count];
-                         }
-                        count++;
+                        var count = 0;
+                        foreach (var icon in icons)
+                        {
+                            var tmp = TestComparison(changed, icon);
+                            if (tmp > highest)
+                            {
+                                highest = tmp;
+                                highesticonname = filenames[count];
+                            }
+                            count++;
+                        }
+
+
+                        //SaveToDisk(swordBitmap);
+                        Console.WriteLine(position + ": " + highest + " " + highesticonname);
                     }
-                    
-                     
-                     //SaveToDisk(swordBitmap);
-                     Console.WriteLine(highest + " " + highesticonname);
+
+
 
                      Thread.Sleep(3000);
+                     Console.WriteLine();
 
 
 
@@ -109,7 +115,9 @@ namespace Combined2DAnd3D
 
         private static Bitmap LoadBmp(string filename)
         {
-            return ChangePixelFormat(new Bitmap((Bitmap)System.Drawing.Bitmap.FromFile(filename + ".bmp")), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            var img = ChangePixelFormat(new Bitmap((Bitmap)System.Drawing.Bitmap.FromFile(filename + ".bmp")), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            img.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            return img;
         }
 
         private static Bitmap ChangePixelFormat(Bitmap inputImage, System.Drawing.Imaging.PixelFormat newFormat)
@@ -120,7 +128,7 @@ namespace Combined2DAnd3D
 
         private static void SaveToDisk(Bitmap bitmap)
         {
-            string filename = "c:\\temp\\screens\\" + DateTime.Now.Ticks + ".png";
+            string filename = "c:\\temp\\screens\\" + DateTime.Now.Ticks + ".bmp";
             var stream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite);
             bitmap.Save(stream, ImageFormat.Bmp);
             stream.Flush();

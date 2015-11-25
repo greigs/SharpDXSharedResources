@@ -11,21 +11,27 @@ namespace Combined2DAnd3D
     public static class Texture2DExtensions
     {
 
+        public static Texture2D textureCopy = null;
+
         public static Bitmap[] SplitIntoBitmapSegments(this Texture2D texture, SharpDX.Direct3D10.Device device, System.Drawing.Rectangle[] areas)
         {
-            var textureCopy = new Texture2D(device, new Texture2DDescription
+            if (textureCopy == null)
             {
-                Width = texture.Description.Width,
-                Height = texture.Description.Height,
-                MipLevels = 1,
-                ArraySize = 1,
-                Format = texture.Description.Format,
-                Usage = ResourceUsage.Staging,
-                SampleDescription = new SampleDescription(1, 0),
-                BindFlags = BindFlags.None,
-                CpuAccessFlags = CpuAccessFlags.Read,
-                OptionFlags = ResourceOptionFlags.None
-            });
+                textureCopy = new Texture2D(device, new Texture2DDescription
+                {
+                    Width = texture.Description.Width,
+                    Height = texture.Description.Height,
+                    MipLevels = 1,
+                    ArraySize = 1,
+                    Format = texture.Description.Format,
+                    Usage = ResourceUsage.Staging,
+                    SampleDescription = new SampleDescription(1, 0),
+                    BindFlags = BindFlags.None,
+                    CpuAccessFlags = CpuAccessFlags.Read,
+                    OptionFlags = ResourceOptionFlags.None
+                });
+            }
+
             device.CopyResource(texture, textureCopy);
 
             DataStream mipsize;
@@ -73,6 +79,7 @@ namespace Combined2DAnd3D
                 bitmap.UnlockBits(mapDest);
 
                 bitmaps[i] = bitmap;
+                textureCopy.Unmap(0);
                 
             }
 
