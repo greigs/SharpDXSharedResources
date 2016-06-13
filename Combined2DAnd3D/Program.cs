@@ -3,7 +3,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using Combined2DAnd3D.ImageCompare;
 using SharpDX.Direct3D10;
@@ -13,13 +16,65 @@ using Device1 = SharpDX.Direct3D10.Device1;
 namespace Combined2DAnd3D
 {
 
-    public class Program : IMessageComputer
+    public class Program
     {
+        [DllImport("ConsoleApplication1.dll")]
+        private static extern IStream StartOBS();
+      
 
         public static void Main()
         {
-            new Program().Start();
+
+
+            var stream = StartOBS();
+
+            const int stringlen = 40;
+            byte[] bytes = new byte[stringlen];
+            int offset = 0;
+  
+            var str = string.Empty;
+
+
+            while (string.IsNullOrWhiteSpace(str))
+            {
+                //Console.WriteLine(BitConverter.ToInt32(bytes, 0));
+                //for (var i = 0; i < 10; i++)
+                //{
+                    
+                    Thread.Sleep(100);
+                    //stream.Seek(4, 0, NewPosition);
+                    //Console.WriteLine(Marshal.ReadInt64(NewPosition));
+                    //stream.Seek(0, 0, IntPtr.Zero);
+                    bytes = new byte[stringlen];
+                    stream.Read(bytes, stringlen, IntPtr.Zero);
+
+                    stream.Seek(offset, 0, IntPtr.Zero);
+
+                    //stream.Seek(4, 0, IntPtr.Zero);
+                    str = string.Empty;
+                    foreach (var b in bytes)
+                    {
+                        str += Convert.ToChar(b);
+                    }
+
+                    var trimEndIndex = str.LastIndexOf("\0\0\0\0", StringComparison.Ordinal);
+                    str = str.Substring(0, trimEndIndex - 1);
+
+                    str = str.Replace("\0", string.Empty);
+                    //str = str.TrimEnd();
+                    Console.WriteLine(str);
+                    //Console.WriteLine(BitConverter.ToInt32(bytes, 0));
+                    offset += stringlen;
+                //}
+                offset = 0;
+            }
+
+            var program = new Program();
+                
+            program.Run(long.Parse(str));
+            program.ComputeSingleIconSet();
         }
+
 
         private Texture2D textureD3D10;
         private IEnumerable<Bitmap> icons;
@@ -52,21 +107,21 @@ namespace Combined2DAnd3D
 
         public void Start()
         {
-            Run();
-            new SynchronousSocketListener(this).Start();
+            Run(0);
+            //new SynchronousSocketListener(this).Start();
             
         }
 
-        public void Run()
+        public void Run(long ptr)
         {
             var factory1 = new Factory1();
             var adapter1 = factory1.GetAdapter1(0);
             
             device10 = new SharpDX.Direct3D10.Device1(adapter1);
-            var ptrVal = ((long)-2147476734); // handle of shared texture
+            var ptrVal = ((long)ptr); // handle of shared texture
 
 
-
+  
 
             
             icons = filenames.Select(LoadBmp);
